@@ -360,22 +360,20 @@ module.exports = function (webpackEnv) {
     module: {
       strictExportPresence: true,
       rules: [
-        /*
-        {
-        test: /\.svg$/,
-        use: ['@svgr/webpack', 'svg-url-loader'],
-        },    
-        */
 
         {
-          loader: 'svg-url-loader',
-          options: {
-            // Inline files smaller than 10 kB
-            limit: 10 * 1024,
-            noquotes: true,
-          },
+          test: /\.(png|jp(e*)g|svg|gif)$/,
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                name: 'images/[hash]-[name].[ext]',
+                esModule: false,
+              },
+            },
+          ],
         },
-        
+
         // Disable require.ensure as it's not a standard language feature.
         { parser: { requireEnsure: false } },
         {
@@ -398,7 +396,7 @@ module.exports = function (webpackEnv) {
             // smaller than specified limit in bytes as data URLs to avoid requests.
             // A missing `test` is equivalent to a match.
             {
-              test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
+              test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/, /\.svg$/],
               loader: require.resolve('url-loader'),
               options: {
                 limit: imageInlineSizeLimit,
