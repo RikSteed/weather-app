@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme)=>({
     button:{
       marginRight: "20px",
     }
-  })); 
+  }));
 
 const NavBar = () => {
     const classes = useStyles();
