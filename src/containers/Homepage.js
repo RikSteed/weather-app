@@ -11,23 +11,31 @@ const Homepage = () => {
 
     const url = "https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=45.25739202&lon=8.85923765";
 
+    const getData = () => {
+        return fetch(url)
+        .then(res => res.json());
+    }
+
+
     useEffect(
         ()=> {
-            fetch(url)
-            .then(res => res.json())
+            getData()
             .then((data) => 
             {
                 setWeather(data.properties.timeseries);
 
+                // Data finale -> Giorni -> Ore -> Meteo
                 weather.splice(0,50).reduce((days, data) => {
-                    if(days[getDayFormat(data.time)] && days[getDayFormat(data.time)].length){
-                        days[getDayFormat(data.time)].push({day: getDayFormat(data.time), time: getHoursFormat(data.time), data: data.data})
+                    const day = days[getDayFormat(data.time)];
+                    if(day && day.length){
+                        day.push({day: day, time: getHoursFormat(data.time), data: data.data})
                     }else{
                         days[getDayFormat(data.time)] = [{time: getHoursFormat(data.time), data: data.data}] ;
                     }
                     setDay(days);
                     return days;
                 }, {});
+                console.log(days);
                 
             }).catch(console.error);;
         },
@@ -54,13 +62,12 @@ const Homepage = () => {
             {/* WeatherCard modificata - EXPAND con Accordion*/}
 
 
-
             {/* Meteo Totale - FUNZIONANTE */}
             {weather.length &&
-                weather.slice(0, 50).map(({time, data}) => 
+                weather.slice(0, 1).map(({time, data}) => 
                 <WeatherCard key={time}
                     image={data.next_1_hours.summary.symbol_code}
-                    time={getHoursFormat(time)} 
+                    time={getDayFormat(time)} 
                     wind_speed={data.instant.details.wind_speed}
                     air_temperature={data.instant.details.air_temperature}
                 />)
