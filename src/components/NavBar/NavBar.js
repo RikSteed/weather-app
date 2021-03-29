@@ -1,6 +1,9 @@
 import { AppBar, Button, makeStyles, Toolbar, Typography } from "@material-ui/core";
 import ReplayIcon from '@material-ui/icons/Replay';
 
+const refreshList = () =>{
+  return window.location.reload();
+}
 
 const useStyles = makeStyles((theme)=>({
     menuButton:{
@@ -24,7 +27,7 @@ const NavBar = () => {
                 Meteo
             </Typography>
             <Button className={classes.button} color="inherit">Altra Pagina</Button>
-            <Button variant="contained" color="secondary">
+            <Button onClick={refreshList} variant="contained" color="secondary">
                 <ReplayIcon/>
             </Button>
         </Toolbar>
