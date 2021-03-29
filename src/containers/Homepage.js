@@ -6,6 +6,8 @@ import WeatherCard from "../components/WeatherCard/WeatherCard";
 
 const Homepage = () => {
 
+    console.log("RENDER HOMEPAGE");
+
     const [weather, setWeather] = useState([]);
     const [days, setDay] = useState({});
 
@@ -24,19 +26,19 @@ const Homepage = () => {
             {
                 setWeather(data.properties.timeseries);
 
+
                 // Data finale -> Giorni -> Ore -> Meteo
-                weather.splice(0,50).reduce((days, data) => {
+                const days = weather.splice(0,50).reduce((days, data) => {
                     const day = days[getDayFormat(data.time)];
                     if(day && day.length){
-                        day.push({day: day, time: getHoursFormat(data.time), data: data.data})
+                        day.push({time: getHoursFormat(data.time), data: data.data})
                     }else{
                         days[getDayFormat(data.time)] = [{time: getHoursFormat(data.time), data: data.data}] ;
                     }
-                    setDay(days);
                     return days;
                 }, {});
-                console.log(days);
-                
+                setDay(days);
+                setTimeout(() => console.log(Object.keys(days)), 1000);             
             }).catch(console.error);;
         },
     []);
@@ -57,20 +59,17 @@ const Homepage = () => {
 
     return(
         <div className="homepage">
-            <h1>Meteo di oggi</h1>
-
-            {/* WeatherCard modificata - EXPAND con Accordion*/}
-
-
+            <h1>Meteo</h1>
             {/* Meteo Totale - FUNZIONANTE */}
-            {weather.length &&
-                weather.slice(0, 1).map(({time, data}) => 
-                <WeatherCard key={time}
-                    image={data.next_1_hours.summary.symbol_code}
-                    time={getDayFormat(time)} 
-                    wind_speed={data.instant.details.wind_speed}
-                    air_temperature={data.instant.details.air_temperature}
-                />)
+            {
+            (Object.keys(days).length>0) &&
+                Object.keys(days).map((date) => 
+                <WeatherCard 
+                    key={date}
+                    time={date}
+                    data = {days[date]}
+                />
+                )
             }
         </div>
     );
